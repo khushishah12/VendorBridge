@@ -1,5 +1,9 @@
 # 🚀 VendorBridge – AI-Powered Smart Vendor Management Platform
 ---
+## 🌐 Live Demo
+
+🔗 **Website:** [https://vendorbridge.vercel.app](https://vendor-bridge-si3k.vercel.app/login)
+---
 ## 🌟 Overview
 
 VendorBridge is a next-generation procurement and vendor management platform designed to streamline communication between organizations, procurement officers, vendors, managers, and administrators.
