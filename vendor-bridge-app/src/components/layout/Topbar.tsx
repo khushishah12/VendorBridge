@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import { User, LogOut, ChevronDown, Bell, Menu, Building2 } from "lucide-react"
 
 const roleConfig: Record<string, { name: string; label: string; initials: string; dashboard: string }> = {
+  admin: { name: "System Administrator", label: "Full Access", initials: "SA", dashboard: "Admin Dashboard" },
   procurement: { name: "Procurement Officer", label: "Procurement Manager", initials: "PO", dashboard: "Procurement Dashboard" },
   vendor: { name: "Vendor Partner", label: "Registered Vendor", initials: "VP", dashboard: "Vendor Portal" },
   manager: { name: "Senior Manager", label: "Approval Authority", initials: "SM", dashboard: "Approval Dashboard" },

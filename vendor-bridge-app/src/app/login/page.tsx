@@ -24,7 +24,7 @@ import {
 } from "lucide-react"
 
 type AuthTab = "login" | "register"
-type Role = "procurement" | "vendor" | "manager"
+type Role = "admin" | "procurement" | "vendor" | "manager"
 
 interface FormErrors {
   fullName?: string
@@ -61,6 +61,7 @@ const statCards = [
 ]
 
 const roleDescriptions: Record<Role, string> = {
+  admin: "Full platform administration, user management & system configuration",
   procurement: "Procurement Officer manages RFQs, quotations & vendor negotiations",
   vendor: "Vendor submits quotations, manages profiles & responds to RFQs",
   manager: "Manager/Approver reviews & approves procurement requests",
@@ -116,6 +117,7 @@ export default function LoginPage() {
   }
 
   function getRoleFromEmail(email: string): string {
+    if (email.includes("admin")) return "admin"
     if (email.includes("vendor")) return "vendor"
     if (email.includes("manager")) return "manager"
     return "procurement"
@@ -341,7 +343,8 @@ export default function LoginPage() {
                   </div>
                   <div className="space-y-1.5">
                     {[
-                      { role: "Procurement Officer", email: "admin@vendorbridge.io", label: "Admin access" },
+                      { role: "Admin", email: "admin@vendorbridge.io", label: "Full platform access" },
+                      { role: "Procurement Officer", email: "procurement@vendorbridge.io", label: "Procurement workflow" },
                       { role: "Vendor", email: "vendor@vendorbridge.io", label: "Vendor portal" },
                       { role: "Manager", email: "manager@vendorbridge.io", label: "Approval workflow" },
                     ].map((u) => (
@@ -488,8 +491,8 @@ export default function LoginPage() {
                 {/* Role Selection */}
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-white/70">Role</label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {(["procurement", "vendor", "manager"] as Role[]).map((r) => (
+                  <div className="grid grid-cols-4 gap-2">
+                    {(["admin", "procurement", "vendor", "manager"] as Role[]).map((r) => (
                       <button
                         key={r}
                         type="button"
@@ -500,7 +503,7 @@ export default function LoginPage() {
                             : "border-white/10 bg-white/5 text-white/50 hover:border-white/20 hover:text-white/70"
                         }`}
                       >
-                        {r === "procurement" ? "Procurement" : r === "vendor" ? "Vendor" : "Manager"}
+                        {r === "admin" ? "Admin" : r === "procurement" ? "Procurement" : r === "vendor" ? "Vendor" : "Manager"}
                       </button>
                     ))}
                   </div>

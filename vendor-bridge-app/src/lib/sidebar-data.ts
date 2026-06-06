@@ -127,7 +127,6 @@ export const vendorSidebar: SidebarItem[] = [
     icon: FileText,
     children: [
       { label: "Available RFQs ⭐", href: "/vendor/rfqs", icon: Eye, starred: true },
-      { label: "RFQ Details", href: "/vendor/rfqs/details", icon: FileEdit },
       { label: "Submitted RFQs", href: "/vendor/rfqs/submitted", icon: CheckCheck },
       { label: "Closed / Expired", href: "/vendor/rfqs/closed", icon: Archive },
     ],
