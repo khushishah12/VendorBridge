@@ -25,6 +25,8 @@ import {
   MessageSquare,
   AlertTriangle,
   CreditCard,
+  Shield,
+  Activity,
   type LucideIcon,
 } from "lucide-react"
 
@@ -161,6 +163,30 @@ export const vendorSidebar: SidebarItem[] = [
       { label: "Quotation Updates", href: "/vendor/notifications/quotations", icon: Receipt },
       { label: "PO Received", href: "/vendor/notifications/po", icon: ShoppingCart },
       { label: "Changes & Updates", href: "/vendor/notifications/updates", icon: MessageSquare },
+    ],
+  },
+]
+
+export const managerSidebar: SidebarItem[] = [
+  { label: "Dashboard", href: "/manager/dashboard", icon: LayoutDashboard },
+  {
+    label: "Approvals",
+    icon: Shield,
+    children: [
+      { label: "Pending ⭐", href: "/manager/approvals", icon: Clock, starred: true },
+      { label: "Approved", href: "/manager/approvals/approved", icon: CheckCheck },
+      { label: "Rejected", href: "/manager/approvals/rejected", icon: XCircle },
+      { label: "Bulk Actions", href: "/manager/approvals/bulk", icon: List },
+    ],
+  },
+  { label: "Workflows", href: "/manager/workflows", icon: Activity },
+  {
+    label: "Notifications",
+    icon: Bell,
+    children: [
+      { label: "All Alerts", href: "/manager/notifications", icon: Bell },
+      { label: "Approval Requests", href: "/manager/notifications", icon: Shield },
+      { label: "Warnings", href: "/manager/notifications", icon: AlertTriangle },
     ],
   },
 ]

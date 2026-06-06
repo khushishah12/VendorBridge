@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ChevronDown, ChevronLeft, type LucideIcon } from "lucide-react"
-import { procurementSidebar, vendorSidebar, type SubMenuItem } from "@/lib/sidebar-data"
+import { procurementSidebar, vendorSidebar, managerSidebar, type SubMenuItem } from "@/lib/sidebar-data"
 
 function SidebarSubItem({ item, collapsed }: { item: SubMenuItem; collapsed: boolean }) {
   const pathname = usePathname()
@@ -94,7 +94,8 @@ export default function Sidebar({ role }: { role?: string }) {
   const [collapsed, setCollapsed] = useState(false)
   const pathname = usePathname()
   const isVendor = role === "vendor"
-  const menuData = isVendor ? vendorSidebar : procurementSidebar
+  const isManager = role === "manager"
+  const menuData = isVendor ? vendorSidebar : isManager ? managerSidebar : procurementSidebar
 
   return (
     <>
@@ -115,9 +116,13 @@ export default function Sidebar({ role }: { role?: string }) {
               <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-lg font-bold text-transparent">
                 VendorBridge
               </span>
-              {isVendor && (
-                <span className="shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
-                  Vendor
+              {(isVendor || isManager) && (
+                <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                  isVendor
+                    ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
+                    : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                }`}>
+                  {isVendor ? "Vendor" : "Manager"}
                 </span>
               )}
             </div>
