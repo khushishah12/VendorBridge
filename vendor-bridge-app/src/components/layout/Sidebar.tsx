@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ChevronDown, ChevronLeft, type LucideIcon } from "lucide-react"
-import { sidebarData, type SubMenuItem } from "@/lib/sidebar-data"
+import { procurementSidebar, vendorSidebar, type SubMenuItem } from "@/lib/sidebar-data"
 
 function SidebarSubItem({ item, collapsed }: { item: SubMenuItem; collapsed: boolean }) {
   const pathname = usePathname()
@@ -90,9 +90,11 @@ function SidebarGroup({ label, icon: Icon, childrenItems, collapsed, defaultOpen
   )
 }
 
-export default function Sidebar() {
+export default function Sidebar({ role }: { role?: string }) {
   const [collapsed, setCollapsed] = useState(false)
   const pathname = usePathname()
+  const isVendor = role === "vendor"
+  const menuData = isVendor ? vendorSidebar : procurementSidebar
 
   return (
     <>
@@ -109,16 +111,23 @@ export default function Sidebar() {
             VB
           </div>
           {!collapsed && (
-            <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-lg font-bold text-transparent">
-              VendorBridge
-            </span>
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-lg font-bold text-transparent">
+                VendorBridge
+              </span>
+              {isVendor && (
+                <span className="shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                  Vendor
+                </span>
+              )}
+            </div>
           )}
         </div>
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto overflow-x-hidden px-2 py-4 scrollbar-thin">
           <div className="flex flex-col gap-1">
-            {sidebarData.map((item) =>
+            {menuData.map((item) =>
               item.children ? (
                 <SidebarGroup
                   key={item.label}

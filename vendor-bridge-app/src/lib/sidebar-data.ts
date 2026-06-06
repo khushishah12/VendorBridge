@@ -42,7 +42,7 @@ export type SidebarItem = {
   children?: SubMenuItem[]
 }
 
-export const sidebarData: SidebarItem[] = [
+export const procurementSidebar: SidebarItem[] = [
   { label: "Dashboard", href: "/", icon: LayoutDashboard },
   {
     label: "RFQs",
@@ -116,6 +116,52 @@ export const sidebarData: SidebarItem[] = [
       { label: "Quotations", href: "/notifications/quotations", icon: Receipt },
       { label: "Approvals", href: "/notifications/approvals", icon: CheckCircle },
       { label: "Invoices", href: "/notifications/invoices", icon: FileText },
+    ],
+  },
+]
+
+export const vendorSidebar: SidebarItem[] = [
+  { label: "Dashboard", href: "/vendor/dashboard", icon: LayoutDashboard },
+  {
+    label: "RFQs",
+    icon: FileText,
+    children: [
+      { label: "Available RFQs ⭐", href: "/vendor/rfqs", icon: Eye, starred: true },
+      { label: "RFQ Details", href: "/vendor/rfqs/details", icon: FileEdit },
+      { label: "Submitted RFQs", href: "/vendor/rfqs/submitted", icon: CheckCheck },
+      { label: "Closed / Expired", href: "/vendor/rfqs/closed", icon: Archive },
+    ],
+  },
+  {
+    label: "Quotations",
+    icon: Receipt,
+    children: [
+      { label: "Submit Quotation ⭐", href: "/vendor/quotations/create", icon: PlusCircle, starred: true },
+      { label: "My Quotations", href: "/vendor/quotations", icon: List },
+      { label: "Under Review", href: "/vendor/quotations/review", icon: Clock },
+      { label: "Accepted", href: "/vendor/quotations/accepted", icon: CheckCheck },
+      { label: "Rejected", href: "/vendor/quotations/rejected", icon: XCircle },
+      { label: "Shortlisted", href: "/vendor/quotations/shortlisted", icon: Star },
+    ],
+  },
+  {
+    label: "Purchase Orders",
+    icon: ShoppingCart,
+    children: [
+      { label: "Incoming POs ⭐", href: "/vendor/purchase-orders", icon: Eye, starred: true },
+      { label: "Accepted POs", href: "/vendor/purchase-orders/accepted", icon: CheckCheck },
+      { label: "Delivered POs", href: "/vendor/purchase-orders/delivered", icon: Truck },
+      { label: "Rejected / Cancelled", href: "/vendor/purchase-orders/cancelled", icon: Ban },
+    ],
+  },
+  {
+    label: "Notifications",
+    icon: Bell,
+    children: [
+      { label: "New RFQs", href: "/vendor/notifications/rfq", icon: FileText },
+      { label: "Quotation Updates", href: "/vendor/notifications/quotations", icon: Receipt },
+      { label: "PO Received", href: "/vendor/notifications/po", icon: ShoppingCart },
+      { label: "Changes & Updates", href: "/vendor/notifications/updates", icon: MessageSquare },
     ],
   },
 ]

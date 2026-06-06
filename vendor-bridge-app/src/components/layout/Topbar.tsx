@@ -1,11 +1,19 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { User, LogOut, ChevronDown, Bell, Menu } from "lucide-react"
+import { User, LogOut, ChevronDown, Bell, Menu, Building2 } from "lucide-react"
 
-export default function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
+const roleConfig: Record<string, { name: string; label: string; initials: string; dashboard: string }> = {
+  procurement: { name: "Procurement Officer", label: "Procurement Manager", initials: "PO", dashboard: "Procurement Dashboard" },
+  vendor: { name: "Vendor Partner", label: "Registered Vendor", initials: "VP", dashboard: "Vendor Portal" },
+  manager: { name: "Senior Manager", label: "Approval Authority", initials: "SM", dashboard: "Approval Dashboard" },
+}
+
+export default function Topbar({ onToggleSidebar, role }: { onToggleSidebar?: () => void; role?: string }) {
   const [profileOpen, setProfileOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const config = roleConfig[role ?? "procurement"] ?? roleConfig.procurement
+  const email = typeof window !== "undefined" ? localStorage.getItem("vb_email") || "user@vendorbridge.io" : "user@vendorbridge.io"
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -28,8 +36,15 @@ export default function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => vo
           <Menu className="h-5 w-5" />
         </button>
         <div>
-          <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">Procurement Dashboard</h1>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">Welcome back, Admin</p>
+          <div className="flex items-center gap-2">
+            <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">{config.dashboard}</h1>
+            {role === "vendor" && (
+              <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                Vendor Access
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">Welcome back, {config.name}</p>
         </div>
       </div>
 
@@ -47,12 +62,14 @@ export default function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => vo
             onClick={() => setProfileOpen(!profileOpen)}
             className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-xs font-bold text-white">
-              A
+            <div className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white ${
+              role === "vendor" ? "bg-gradient-to-br from-emerald-500 to-teal-600" : "bg-gradient-to-br from-indigo-500 to-purple-600"
+            }`}>
+              {config.initials}
             </div>
             <div className="hidden text-left sm:block">
-              <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50">Admin User</p>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">Procurement Manager</p>
+              <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50">{config.name}</p>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">{config.label}</p>
             </div>
             <ChevronDown className="h-4 w-4 text-zinc-400" />
           </button>
@@ -60,14 +77,16 @@ export default function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => vo
           {profileOpen && (
             <div className="absolute right-0 top-full mt-2 w-64 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg ring-1 ring-black/5 animate-in fade-in slide-in-from-top-2 dark:border-zinc-700 dark:bg-zinc-900">
               {/* Profile header */}
-              <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-4 py-6 text-white">
+              <div className={`px-4 py-6 text-white ${
+                role === "vendor" ? "bg-gradient-to-r from-emerald-500 to-teal-600" : "bg-gradient-to-r from-indigo-500 to-purple-600"
+              }`}>
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-lg font-bold backdrop-blur-sm">
-                    A
+                    {config.initials}
                   </div>
                   <div>
-                    <p className="font-semibold">Admin User</p>
-                    <p className="text-sm text-white/80">admin@vendorbridge.io</p>
+                    <p className="font-semibold">{config.name}</p>
+                    <p className="text-sm text-white/80">{email}</p>
                   </div>
                 </div>
               </div>
@@ -80,14 +99,15 @@ export default function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => vo
                 </button>
                 <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-500 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800">
                   <span className="flex h-4 w-4 items-center justify-center rounded bg-zinc-200 text-[10px] font-bold text-zinc-600 dark:bg-zinc-700 dark:text-zinc-300">
-                    PM
+                    {role === "vendor" ? "V" : "PM"}
                   </span>
-                  Role: Procurement Manager
+                  Role: {config.label}
                 </button>
               </div>
 
               <div className="border-t border-zinc-200 p-2 dark:border-zinc-700">
-                <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/50">
+                <button onClick={() => { localStorage.clear(); window.location.href = "/login" }}
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/50">
                   <LogOut className="h-4 w-4" />
                   Logout
                 </button>

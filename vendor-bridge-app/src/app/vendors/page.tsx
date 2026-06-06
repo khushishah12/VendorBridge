@@ -21,6 +21,7 @@ import {
   Download,
   Shield,
   CheckCircle2,
+  XCircle,
 } from "lucide-react"
 import Link from "next/link"
 

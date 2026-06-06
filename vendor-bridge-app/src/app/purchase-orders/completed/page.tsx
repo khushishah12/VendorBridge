@@ -18,6 +18,7 @@ import {
   CreditCard,
   BarChart3,
   Receipt,
+  XCircle,
 } from "lucide-react"
 import Link from "next/link"
 
