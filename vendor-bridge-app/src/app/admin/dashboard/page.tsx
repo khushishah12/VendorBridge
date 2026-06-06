@@ -7,6 +7,7 @@ import {
   TrendingUp, AlertTriangle, Activity, Clock, UserX, AlertCircle, CheckCircle
 } from "lucide-react"
 import { adminUsers, systemLogs, analyticsSummary } from "@/lib/admin-data"
+import AnimatedCounter from "@/components/ui/AnimatedCounter"
 
 function formatTimestamp(ts: string) {
   const d = new Date(ts)
@@ -113,13 +114,13 @@ export default function AdminDashboardPage() {
           {statCards.map((card) => {
             const Icon = card.icon
             return (
-              <div key={card.label} className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+              <div key={card.label} className="card-hover rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
                 <div className="flex items-center justify-between">
                   <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${card.color}`}>
                     <Icon className="h-5 w-5" />
                   </div>
                 </div>
-                <p className="mt-3 text-2xl font-bold text-zinc-900 dark:text-zinc-50">{card.value}</p>
+                <p className="mt-3 text-2xl font-bold text-zinc-900 dark:text-zinc-50">{typeof card.value === "number" ? <AnimatedCounter value={card.value} /> : card.value}</p>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">{card.label}</p>
                 {card.sub && (
                   <p className="mt-1 text-[10px] leading-tight text-zinc-400 dark:text-zinc-500">{card.sub}</p>
@@ -144,7 +145,7 @@ export default function AdminDashboardPage() {
                 </div>
               ) : (
                 alerts.map((u) => (
-                  <div key={u.id} className={`px-5 py-3.5 border-l-2 ${u.status === "Suspended" ? "border-l-red-400" : "border-l-amber-400"}`}>
+                  <div key={u.id} className={`row-hover px-5 py-3.5 border-l-2 ${u.status === "Suspended" ? "border-l-red-400" : "border-l-amber-400"}`}>
                     <div className="flex items-start gap-3">
                       <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${u.status === "Suspended" ? "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400" : "bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400"}`}>
                         <UserX className="h-4 w-4" />
@@ -185,7 +186,7 @@ export default function AdminDashboardPage() {
                   const Icon = typeIconMap[log.type] || Activity
                   const color = typeColorMap[log.type] || "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
                   return (
-                    <div key={log.id} className="px-5 py-3.5">
+                    <div key={log.id} className="row-hover px-5 py-3.5">
                       <div className="flex items-start gap-3">
                         <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${color}`}>
                           <Icon className="h-4 w-4" />

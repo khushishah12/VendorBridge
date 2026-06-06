@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { motion, AnimatePresence } from "framer-motion"
 import { ChevronDown, ChevronLeft, type LucideIcon } from "lucide-react"
 import { procurementSidebar, vendorSidebar, managerSidebar, adminSidebar, type SubMenuItem } from "@/lib/sidebar-data"
 
@@ -14,7 +15,7 @@ function SidebarSubItem({ item, collapsed }: { item: SubMenuItem; collapsed: boo
     <Link
       href={item.href}
       data-active={active}
-      className={`group flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200
+      className={`group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200
         ${active
           ? "bg-indigo-50 text-indigo-700 font-medium dark:bg-indigo-950/50 dark:text-indigo-300"
           : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
@@ -34,6 +35,20 @@ function SidebarSubItem({ item, collapsed }: { item: SubMenuItem; collapsed: boo
           )}
         </span>
       )}
+      {active && !collapsed && (
+        <motion.span
+          layoutId="sidebarActive"
+          className="absolute inset-0 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 -z-10"
+          transition={{ type: "spring", stiffness: 380, damping: 30 }}
+        />
+      )}
+      {active && collapsed && (
+        <motion.span
+          layoutId="sidebarActiveCollapsed"
+          className="absolute inset-0 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 -z-10"
+          transition={{ type: "spring", stiffness: 380, damping: 30 }}
+        />
+      )}
     </Link>
   )
 }
@@ -51,41 +66,74 @@ function SidebarGroup({ label, icon: Icon, childrenItems, collapsed, defaultOpen
   const isActive = childrenItems.some((c) => pathname === c.href)
   const [open, setOpen] = useState(defaultOpen ?? isActive)
 
+  if (collapsed) {
+    return (
+      <div className="group relative">
+        <div className="flex items-center justify-center rounded-lg px-3 py-2 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100">
+          <Icon className="h-5 w-5 shrink-0" />
+        </div>
+        <div className="invisible absolute left-full top-0 ml-2 rounded-lg border border-zinc-200 bg-white p-2 shadow-lg opacity-0 transition-all group-hover:visible group-hover:opacity-100 dark:border-zinc-700 dark:bg-zinc-950">
+          <p className="mb-1 px-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">{label}</p>
+          {childrenItems.map((child) => {
+            const childActive = pathname === child.href
+            return (
+              <Link
+                key={child.href}
+                href={child.href}
+                className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm whitespace-nowrap ${
+                  childActive ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-300" : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                }`}
+              >
+                <child.icon className="h-3.5 w-3.5" />
+                {child.label}
+                {child.starred && <span className="text-amber-500">⭐</span>}
+              </Link>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       <button
-        onClick={() => !collapsed && setOpen(!open)}
+        onClick={() => setOpen(!open)}
         data-active={isActive}
-        className={`group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
+        className={`group relative flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
           ${isActive
             ? "text-indigo-700 dark:text-indigo-300"
             : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
           }
-          ${collapsed ? "justify-center px-2" : ""}
         `}
-        title={collapsed ? label : undefined}
       >
         <Icon className="h-5 w-5 shrink-0" />
-        {!collapsed && (
-          <>
-            <span className="flex-1 text-left truncate">{label}</span>
-            <ChevronDown
-              className={`h-4 w-4 shrink-0 transition-transform duration-200 ${open ? "rotate-0" : "-rotate-90"}`}
-            />
-          </>
-        )}
-      </button>
-      {!collapsed && (
-        <div
-          className={`overflow-hidden transition-all duration-300 ease-in-out ${open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
+        <span className="flex-1 text-left truncate">{label}</span>
+        <motion.div
+          animate={{ rotate: open ? 0 : -90 }}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
         >
-          <div className="ml-4 mt-1 flex flex-col gap-0.5 border-l border-zinc-200 pl-2 dark:border-zinc-700">
-            {childrenItems.map((child) => (
-              <SidebarSubItem key={child.href} item={child} collapsed={false} />
-            ))}
-          </div>
-        </div>
-      )}
+          <ChevronDown className="h-4 w-4 shrink-0" />
+        </motion.div>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="content"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <div className="ml-4 mt-1 flex flex-col gap-0.5 border-l border-zinc-200 pl-2 dark:border-zinc-700">
+              {childrenItems.map((child) => (
+                <SidebarSubItem key={child.href} item={child} collapsed={false} />
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
@@ -100,20 +148,25 @@ export default function Sidebar({ role }: { role?: string }) {
 
   return (
     <>
-      {/* Mobile overlay */}
-      {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 z-30 flex h-full flex-col border-r border-zinc-200 bg-white shadow-sm transition-all duration-300 dark:border-zinc-800 dark:bg-zinc-950
+        className={`fixed left-0 top-0 z-30 flex h-full flex-col border-r border-zinc-200 bg-white/80 backdrop-blur-xl shadow-sm transition-all duration-300 dark:border-zinc-800 dark:bg-zinc-950/80
           ${collapsed ? "w-16" : "w-64"}
         `}
       >
-        {/* Logo */}
         <div className="flex h-16 items-center gap-3 border-b border-zinc-200 px-4 dark:border-zinc-800">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-xs font-bold text-white">
+          <motion.div
+            whileHover={{ scale: 1.05, rotate: -3 }}
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-xs font-bold text-white shadow-md"
+          >
             VB
-          </div>
+          </motion.div>
           {!collapsed && (
-            <div className="flex items-center gap-2 min-w-0">
+            <motion.div
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3 }}
+              className="flex items-center gap-2 min-w-0"
+            >
               <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-lg font-bold text-transparent">
                 VendorBridge
               </span>
@@ -128,11 +181,10 @@ export default function Sidebar({ role }: { role?: string }) {
                   {isVendor ? "Vendor" : isManager ? "Manager" : "Admin"}
                 </span>
               )}
-            </div>
+            </motion.div>
           )}
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 overflow-y-auto overflow-x-hidden px-2 py-4 scrollbar-thin">
           <div className="flex flex-col gap-1">
             {menuData.map((item) =>
@@ -149,7 +201,7 @@ export default function Sidebar({ role }: { role?: string }) {
                   key={item.label}
                   href={item.href ?? "/"}
                   data-active={pathname === item.href}
-                  className={`group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
+                  className={`group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
                     ${pathname === item.href
                       ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-300"
                       : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
@@ -160,20 +212,31 @@ export default function Sidebar({ role }: { role?: string }) {
                 >
                   <item.icon className="h-5 w-5 shrink-0" />
                   {!collapsed && <span className="truncate">{item.label}</span>}
+                  {pathname === item.href && (
+                    <motion.span
+                      layoutId="sidebarSingleActive"
+                      className="absolute inset-0 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 -z-10"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
                 </Link>
               ),
             )}
           </div>
         </nav>
 
-        {/* Collapse Button */}
         <div className="border-t border-zinc-200 p-2 dark:border-zinc-800">
           <button
             onClick={() => setCollapsed(!collapsed)}
             className="flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <ChevronLeft className={`h-4 w-4 transition-transform ${collapsed ? "rotate-180" : ""}`} />
+            <motion.div
+              animate={{ rotate: collapsed ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </motion.div>
             {!collapsed && <span>Collapse</span>}
           </button>
         </div>

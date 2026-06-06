@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 
-export default function RootPage() {
+export default function ProcurementIndex() {
   const router = useRouter()
   useEffect(() => { router.replace("/procurement/dashboard") }, [router])
   return null

@@ -8,6 +8,7 @@ import {
 } from "lucide-react"
 import { approvalRequests, workflowItems, managerNotifications } from "@/lib/manager-data"
 import type { ApprovalRequest } from "@/lib/manager-data"
+import AnimatedCounter from "@/components/ui/AnimatedCounter"
 
 function typeBadgeColor(type: ApprovalRequest["type"]) {
   switch (type) {
@@ -93,13 +94,13 @@ export default function ManagerDashboardPage() {
           {statCards.map((card) => {
             const Icon = card.icon
             return (
-              <div key={card.label} className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+              <div key={card.label} className="card-hover rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
                 <div className="flex items-center justify-between">
                   <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${card.color}`}>
                     <Icon className="h-5 w-5" />
                   </div>
                 </div>
-                <p className="mt-3 text-2xl font-bold text-zinc-900 dark:text-zinc-50">{card.value}</p>
+                <p className="mt-3 text-2xl font-bold text-zinc-900 dark:text-zinc-50"><AnimatedCounter value={card.value} /></p>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">{card.label}</p>
               </div>
             )
@@ -140,7 +141,7 @@ export default function ManagerDashboardPage() {
                       const done = actionDone.includes(req.id)
                       const confirming = confirmAction?.id === req.id
                       return (
-                        <tr key={req.id} className={`transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-900 ${isUrgent ? "border-l-2 border-l-red-500" : ""}`}>
+                        <tr key={req.id} className={`row-hover ${isUrgent ? "border-l-2 border-l-red-500" : ""}`}>
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-2">
                               <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${typeBadgeColor(req.type)}`}>

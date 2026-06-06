@@ -23,6 +23,7 @@ import {
   BarChart3,
 } from "lucide-react"
 import Link from "next/link"
+import AnimatedCounter from "@/components/ui/AnimatedCounter"
 
 function getTimeLeft(deadline: string): { text: string; urgent: boolean } {
   const diff = new Date(deadline).getTime() - Date.now()
@@ -130,7 +131,7 @@ export default function VendorDashboardPage() {
               <Link
                 key={card.label}
                 href={card.link}
-                className="group rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-zinc-800 dark:bg-zinc-950"
+                className="group rounded-xl border border-zinc-200 bg-white p-4 shadow-sm card-hover dark:border-zinc-800 dark:bg-zinc-950"
               >
                 <div className="flex items-center justify-between">
                   <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${card.color}`}>
@@ -138,7 +139,7 @@ export default function VendorDashboardPage() {
                   </div>
                   <ArrowRight className="h-4 w-4 text-zinc-300 transition-colors group-hover:text-zinc-500 dark:text-zinc-600 dark:group-hover:text-zinc-400" />
                 </div>
-                <p className="mt-3 text-2xl font-bold text-zinc-900 dark:text-zinc-50">{card.value}</p>
+                <p className="mt-3 text-2xl font-bold text-zinc-900 dark:text-zinc-50"><AnimatedCounter value={card.value} /></p>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">{card.label}</p>
               </Link>
             )
@@ -166,7 +167,7 @@ export default function VendorDashboardPage() {
                 recentNotifications.map((n) => {
                   const Icon = notifIcon(n.type)
                   return (
-                    <div key={n.id} className="flex items-start gap-3 px-5 py-3.5 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                    <div key={n.id} className="flex items-start gap-3 px-5 py-3.5 row-hover">
                       <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${notifIconColor(n.type)}`}>
                         <Icon className="h-4 w-4" />
                       </div>
@@ -231,7 +232,7 @@ export default function VendorDashboardPage() {
                       <Link
                         key={rfq.id}
                         href={`/vendor/rfqs/${rfq.id}`}
-                        className="block px-5 py-3.5 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-900/50"
+                        className="block px-5 py-3.5 row-hover"
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0">

@@ -22,6 +22,7 @@ import {
   Sparkles,
   Quote,
 } from "lucide-react"
+import { getHomeForRole } from "@/lib/route-guard"
 
 type AuthTab = "login" | "register"
 type Role = "admin" | "procurement" | "vendor" | "manager"
@@ -116,29 +117,16 @@ export default function LoginPage() {
     return Object.keys(e).length === 0
   }
 
-  function getRoleFromEmail(email: string): string {
-    if (email.includes("admin")) return "admin"
-    if (email.includes("vendor")) return "vendor"
-    if (email.includes("manager")) return "manager"
-    return "procurement"
-  }
-
-  function getHomeForRole(r: string): string {
-    if (r === "vendor") return "/vendor/dashboard"
-    if (r === "manager") return "/manager/dashboard"
-    return "/"
-  }
-
   function handleLogin(e: React.FormEvent) {
     e.preventDefault()
     if (!validateLogin()) return
     setLoading(true)
     setTimeout(() => {
-      const role = getRoleFromEmail(loginEmail)
-      localStorage.setItem("vb_role", role)
+      const r = loginEmail.includes("admin") ? "admin" : loginEmail.includes("vendor") ? "vendor" : loginEmail.includes("manager") ? "manager" : "procurement"
+      localStorage.setItem("vb_role", r)
       localStorage.setItem("vb_email", loginEmail)
       setLoading(false)
-      window.location.href = getHomeForRole(role)
+      window.location.href = getHomeForRole(r)
     }, 1500)
   }
 
@@ -349,22 +337,19 @@ export default function LoginPage() {
                   </div>
                   <div className="space-y-1.5">
                     {[
-                      { role: "Admin", email: "admin@vendorbridge.io", home: "/" },
-                      { role: "Procurement Officer", email: "procurement@vendorbridge.io", home: "/" },
-                      { role: "Vendor", email: "vendor@vendorbridge.io", home: "/vendor/dashboard" },
-                      { role: "Manager", email: "manager@vendorbridge.io", home: "/manager/dashboard" },
+                      { role: "Admin", email: "admin@vendorbridge.io" },
+                      { role: "Procurement Officer", email: "procurement@vendorbridge.io" },
+                      { role: "Vendor", email: "vendor@vendorbridge.io" },
+                      { role: "Manager", email: "manager@vendorbridge.io" },
                     ].map((u) => (
                       <button
                         key={u.email}
                         type="button"
                         onClick={() => {
-                          const role = u.email === "admin@vendorbridge.io" ? "admin"
-                            : u.email.includes("vendor") ? "vendor"
-                            : u.email.includes("manager") ? "manager"
-                            : "procurement"
-                          localStorage.setItem("vb_role", role)
+                          const r = u.email.includes("admin") ? "admin" : u.email.includes("vendor") ? "vendor" : u.email.includes("manager") ? "manager" : "procurement"
+                          localStorage.setItem("vb_role", r)
                           localStorage.setItem("vb_email", u.email)
-                          window.location.href = u.home
+                          window.location.href = getHomeForRole(r)
                         }}
                         className="group flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-xs transition-colors hover:bg-white/5"
                       >
