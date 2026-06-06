@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { Suspense, useState, useMemo } from "react"
 import DashboardLayout from "@/components/layout/DashboardLayout"
 import {
   ArrowLeft,
@@ -11,13 +11,13 @@ import {
   CheckCircle2,
   Send,
   XCircle,
-  ChevronDown,
   Sparkles,
   TrendingDown,
   Zap,
   Shield,
 } from "lucide-react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 
 interface QuotationItem {
   name: string
@@ -74,14 +74,22 @@ const comparisonData: QuotationCompare[] = [
 
 type SortKey = "price" | "delivery" | "rating"
 
-export default function CompareQuotationsPage() {
+function CompareContent() {
+  const searchParams = useSearchParams()
+  const selectedIds = searchParams.get("ids")?.split(",").filter(Boolean) || []
+
   const [sortBy, setSortBy] = useState<SortKey>("price")
   const [selectedWinner, setSelectedWinner] = useState<string | null>(null)
   const [hiddenVendors, setHiddenVendors] = useState<string[]>([])
   const [actionMsg, setActionMsg] = useState<string | null>(null)
 
+  const data = useMemo(() => {
+    if (selectedIds.length === 0) return comparisonData
+    return comparisonData.filter((q) => selectedIds.includes(q.id))
+  }, [selectedIds])
+
   const sorted = useMemo(() => {
-    const visible = comparisonData.filter((q) => !hiddenVendors.includes(q.vendor))
+    const visible = data.filter((q) => !hiddenVendors.includes(q.vendor))
     return [...visible].sort((a, b) => {
       if (sortBy === "price") return a.totalAmount - b.totalAmount
       if (sortBy === "delivery") {
@@ -103,7 +111,7 @@ export default function CompareQuotationsPage() {
     setTimeout(() => setActionMsg(null), 2500)
   }
 
-  const allItemNames = [...new Set(comparisonData.flatMap((q) => q.items.map((i) => i.name)))]
+  const allItemNames = [...new Set(data.flatMap((q) => q.items.map((i) => i.name)))]
 
   return (
     <DashboardLayout>
@@ -161,7 +169,7 @@ export default function CompareQuotationsPage() {
             </button>
           ))}
           <span className="ml-4 text-sm text-zinc-500 dark:text-zinc-400">Hide:</span>
-          {comparisonData.map((q) => (
+          {data.map((q) => (
             <button
               key={q.vendor}
               onClick={() => setHiddenVendors((prev) =>
@@ -405,5 +413,13 @@ export default function CompareQuotationsPage() {
         )}
       </div>
     </DashboardLayout>
+  )
+}
+
+export default function CompareQuotationsPage() {
+  return (
+    <Suspense fallback={<DashboardLayout><div className="p-8 text-center text-zinc-400">Loading...</div></DashboardLayout>}>
+      <CompareContent />
+    </Suspense>
   )
 }
