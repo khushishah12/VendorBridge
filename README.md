@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🚀 VendorBridge – AI-Powered Smart Vendor Management Platform
 ---
 ## 🌐 Live Demo
