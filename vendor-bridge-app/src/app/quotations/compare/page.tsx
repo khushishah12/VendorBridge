@@ -287,7 +287,7 @@ export default function CompareQuotationsPage() {
                   <Clock className="inline h-4 w-4 mr-1" /> Delivery Timeline
                 </td>
                 {sorted.map((q) => (
-                  <td className={`px-4 py-3 text-center font-medium ${
+                  <td key={q.vendor} className={`px-4 py-3 text-center font-medium ${
                     parseInt(q.deliveryTimeline) === fastestDelivery
                       ? "text-blue-600 dark:text-blue-400"
                       : "text-zinc-700 dark:text-zinc-300"
@@ -304,7 +304,7 @@ export default function CompareQuotationsPage() {
                   <Shield className="inline h-4 w-4 mr-1" /> Warranty / Terms
                 </td>
                 {sorted.map((q) => (
-                  <td className="px-4 py-3 text-center text-zinc-600 dark:text-zinc-400">{q.warranty}</td>
+                  <td key={q.vendor} className="px-4 py-3 text-center text-zinc-600 dark:text-zinc-400">{q.warranty}</td>
                 ))}
               </tr>
 
@@ -314,7 +314,7 @@ export default function CompareQuotationsPage() {
                   <Star className="inline h-4 w-4 mr-1" /> Rating &amp; Past Performance
                 </td>
                 {sorted.map((q) => (
-                  <td className="px-4 py-3 text-center">
+                  <td key={q.vendor} className="px-4 py-3 text-center">
                     <div className="flex flex-col items-center">
                       <span className="inline-flex items-center gap-1 text-sm font-medium text-amber-500">
                         <Star className="h-3.5 w-3.5 fill-amber-400" /> {q.rating}
@@ -335,7 +335,7 @@ export default function CompareQuotationsPage() {
                     const score = (q.rating * 10) - (q.totalAmount / 100000) + (fastestDelivery / parseInt(q.deliveryTimeline || "30"))
                     const isBest = score === Math.max(...sorted.map((x) => (x.rating * 10) - (x.totalAmount / 100000) + (fastestDelivery / parseInt(x.deliveryTimeline || "30"))))
                     return (
-                      <td className="px-4 py-3 text-center">
+                      <td key={q.vendor} className="px-4 py-3 text-center">
                         {isBest ? (
                           <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700 dark:bg-purple-950/40 dark:text-purple-300">
                             <Trophy className="h-3 w-3" /> Top Pick
@@ -355,7 +355,7 @@ export default function CompareQuotationsPage() {
                   <CheckCircle2 className="inline h-4 w-4 mr-1" /> Select Winner
                 </td>
                 {sorted.map((q) => (
-                  <td className="px-4 py-4 text-center">
+                  <td key={q.vendor} className="px-4 py-4 text-center">
                     <button
                       onClick={() => setSelectedWinner(selectedWinner === q.vendor ? null : q.vendor)}
                       className={`rounded-lg border px-4 py-2 text-sm font-medium transition-all ${
