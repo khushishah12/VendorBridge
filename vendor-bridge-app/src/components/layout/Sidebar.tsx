@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ChevronDown, ChevronLeft, type LucideIcon } from "lucide-react"
-import { procurementSidebar, vendorSidebar, managerSidebar, type SubMenuItem } from "@/lib/sidebar-data"
+import { procurementSidebar, vendorSidebar, managerSidebar, adminSidebar, type SubMenuItem } from "@/lib/sidebar-data"
 
 function SidebarSubItem({ item, collapsed }: { item: SubMenuItem; collapsed: boolean }) {
   const pathname = usePathname()
@@ -95,7 +95,8 @@ export default function Sidebar({ role }: { role?: string }) {
   const pathname = usePathname()
   const isVendor = role === "vendor"
   const isManager = role === "manager"
-  const menuData = isVendor ? vendorSidebar : isManager ? managerSidebar : procurementSidebar
+  const isAdmin = role === "admin"
+  const menuData = isVendor ? vendorSidebar : isManager ? managerSidebar : isAdmin ? adminSidebar : procurementSidebar
 
   return (
     <>
@@ -116,13 +117,15 @@ export default function Sidebar({ role }: { role?: string }) {
               <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-lg font-bold text-transparent">
                 VendorBridge
               </span>
-              {(isVendor || isManager) && (
+              {(isVendor || isManager || isAdmin) && (
                 <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${
                   isVendor
                     ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
-                    : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                    : isManager
+                    ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                    : "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
                 }`}>
-                  {isVendor ? "Vendor" : "Manager"}
+                  {isVendor ? "Vendor" : isManager ? "Manager" : "Admin"}
                 </span>
               )}
             </div>

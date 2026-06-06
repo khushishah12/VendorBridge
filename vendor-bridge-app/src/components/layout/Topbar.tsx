@@ -44,6 +44,16 @@ export default function Topbar({ onToggleSidebar, role }: { onToggleSidebar?: ()
                 Vendor Access
               </span>
             )}
+            {role === "admin" && (
+              <span className="rounded-full bg-purple-100 px-2 py-0.5 text-[10px] font-semibold text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+                Full Access
+              </span>
+            )}
+            {role === "manager" && (
+              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                Manager Access
+              </span>
+            )}
           </div>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">Welcome back, {config.name}</p>
         </div>

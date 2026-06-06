@@ -27,6 +27,9 @@ import {
   CreditCard,
   Shield,
   Activity,
+  Users,
+  BarChart3 as BarChart,
+  ScrollText,
   type LucideIcon,
 } from "lucide-react"
 
@@ -189,4 +192,12 @@ export const managerSidebar: SidebarItem[] = [
       { label: "Warnings", href: "/manager/notifications", icon: AlertTriangle },
     ],
   },
+]
+
+export const adminSidebar: SidebarItem[] = [
+  { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+  { label: "User Management ⭐", href: "/admin/users", icon: Users },
+  { label: "Vendor Management ⭐", href: "/admin/vendors", icon: Building2 },
+  { label: "Analytics", href: "/admin/analytics", icon: BarChart },
+  { label: "System Logs", href: "/admin/logs", icon: ScrollText },
 ]

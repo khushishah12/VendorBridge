@@ -123,6 +123,12 @@ export default function LoginPage() {
     return "procurement"
   }
 
+  function getHomeForRole(r: string): string {
+    if (r === "vendor") return "/vendor/dashboard"
+    if (r === "manager") return "/manager/dashboard"
+    return "/"
+  }
+
   function handleLogin(e: React.FormEvent) {
     e.preventDefault()
     if (!validateLogin()) return
@@ -132,7 +138,7 @@ export default function LoginPage() {
       localStorage.setItem("vb_role", role)
       localStorage.setItem("vb_email", loginEmail)
       setLoading(false)
-      window.location.href = "/"
+      window.location.href = getHomeForRole(role)
     }, 1500)
   }
 
@@ -144,7 +150,7 @@ export default function LoginPage() {
       localStorage.setItem("vb_role", role)
       localStorage.setItem("vb_email", regEmail)
       setLoading(false)
-      window.location.href = "/"
+      window.location.href = getHomeForRole(role)
     }, 1500)
   }
 
@@ -343,26 +349,36 @@ export default function LoginPage() {
                   </div>
                   <div className="space-y-1.5">
                     {[
-                      { role: "Admin", email: "admin@vendorbridge.io", label: "Full platform access" },
-                      { role: "Procurement Officer", email: "procurement@vendorbridge.io", label: "Procurement workflow" },
-                      { role: "Vendor", email: "vendor@vendorbridge.io", label: "Vendor portal" },
-                      { role: "Manager", email: "manager@vendorbridge.io", label: "Approval workflow" },
+                      { role: "Admin", email: "admin@vendorbridge.io", home: "/" },
+                      { role: "Procurement Officer", email: "procurement@vendorbridge.io", home: "/" },
+                      { role: "Vendor", email: "vendor@vendorbridge.io", home: "/vendor/dashboard" },
+                      { role: "Manager", email: "manager@vendorbridge.io", home: "/manager/dashboard" },
                     ].map((u) => (
                       <button
                         key={u.email}
                         type="button"
-                        onClick={() => { setLoginEmail(u.email); setLoginPassword("password123") }}
-                        className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-xs transition-colors hover:bg-white/5"
+                        onClick={() => {
+                          const role = u.email === "admin@vendorbridge.io" ? "admin"
+                            : u.email.includes("vendor") ? "vendor"
+                            : u.email.includes("manager") ? "manager"
+                            : "procurement"
+                          localStorage.setItem("vb_role", role)
+                          localStorage.setItem("vb_email", u.email)
+                          window.location.href = u.home
+                        }}
+                        className="group flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-xs transition-colors hover:bg-white/5"
                       >
                         <div className="flex items-center gap-2">
                           <span className="font-medium text-white/70">{u.role}</span>
                           <span className="text-indigo-400/70 font-mono">{u.email}</span>
                         </div>
-                        <span className="text-white/40">/ password123</span>
+                        <span className="flex items-center gap-1 text-white/30 opacity-0 transition-opacity group-hover:opacity-100">
+                          Sign in <ChevronRight className="h-3 w-3" />
+                        </span>
                       </button>
                     ))}
                   </div>
-                  <p className="mt-1.5 text-[10px] text-white/30">Click any row to auto-fill — all share the password: <span className="font-mono text-indigo-400/60">password123</span></p>
+                  <p className="mt-1.5 text-[10px] text-white/30">Click any row to instantly sign in — <span className="font-mono text-indigo-400/60">password123</span> also works via form</p>
                 </div>
 
                 {/* Login Button */}
